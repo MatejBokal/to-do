@@ -99,7 +99,7 @@ to `middleware.ts` and rename the exported function `proxy` to `middleware`.
 ## What has and has not been tested
 
 - **Database:** the migration was run on a real PostgreSQL 16 server with the Supabase `auth` schema imitated, and 17
-  checks passed: numbering, history, releases, row-level security between two users, anonymous access, the coworker flow.
+  checks passed (they live in `supabase/tests/`): numbering, history, releases, row-level security between two users, anonymous access, the coworker flow.
 - **Quick-capture parser and changelog:** tested directly.
 - **App code:** type-checked in strict mode, but against stand-in types for Next.js, React and Supabase, because the
   npm registry was not reachable where this was written.
