@@ -23,7 +23,10 @@ export const getContext = cache(async (slug: string) => {
   if (spaces.length === 0) {
     // First sign-in: create the Work and Personal spaces.
     await supabase.rpc('ensure_default_spaces');
-    spaces = rows<Space>((await supabase.from('spaces').select('id, name, slug, kind').order('created_at')).data);
+    // The abort signal stops Next from answering this GET with the identical, empty one made a moment ago.
+    spaces = rows<Space>(
+      (await supabase.from('spaces').select('id, name, slug, kind').order('created_at').abortSignal(new AbortController().signal)).data,
+    );
   }
 
   const space = spaces.find((s) => s.slug === slug);

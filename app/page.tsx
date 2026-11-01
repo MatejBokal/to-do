@@ -13,7 +13,10 @@ export default async function Home() {
   let spaces = rows<Space>((await supabase.from('spaces').select('id, name, slug, kind').order('created_at')).data);
   if (spaces.length === 0) {
     await supabase.rpc('ensure_default_spaces');
-    spaces = rows<Space>((await supabase.from('spaces').select('id, name, slug, kind').order('created_at')).data);
+    // The abort signal stops Next from answering this GET with the identical, empty one made a moment ago.
+    spaces = rows<Space>(
+      (await supabase.from('spaces').select('id, name, slug, kind').order('created_at').abortSignal(new AbortController().signal)).data,
+    );
   }
   if (spaces.length > 0) redirect(`/s/${spaces[0].slug}`);
 
