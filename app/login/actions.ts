@@ -4,6 +4,21 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 
+export async function signInWithPassword(formData: FormData): Promise<void> {
+  const email = String(formData.get('email') ?? '').trim();
+  const password = String(formData.get('password') ?? '');
+  if (!email || !password) {
+    redirect('/login?error=' + encodeURIComponent('Enter your email address and password'));
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) {
+    redirect('/login?error=' + encodeURIComponent('Wrong email or password'));
+  }
+  redirect('/');
+}
+
 export async function signInWithEmail(formData: FormData): Promise<void> {
   const email = String(formData.get('email') ?? '').trim();
   if (!email) {

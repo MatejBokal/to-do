@@ -1,4 +1,4 @@
-import { signInWithEmail } from './actions';
+import { signInWithEmail, signInWithPassword } from './actions';
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -22,13 +22,20 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
             Check your inbox. The sign-in link is on its way.
           </p>
         ) : (
-          <form action={signInWithEmail} className="stack">
+          <form action={signInWithPassword} className="stack">
             <label className="field">
               <span className="field__label">Email</span>
               <input className="input" type="email" name="email" required autoComplete="email" autoFocus />
             </label>
+            <label className="field">
+              <span className="field__label">Password</span>
+              <input className="input" type="password" name="password" required autoComplete="current-password" />
+            </label>
             <button className="btn btn--primary" type="submit">
-              Email me a sign-in link
+              Sign in
+            </button>
+            <button className="btn btn--ghost" type="submit" formAction={signInWithEmail} formNoValidate>
+              Email me a sign-in link instead
             </button>
           </form>
         )}
