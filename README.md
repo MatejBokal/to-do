@@ -101,10 +101,9 @@ to `middleware.ts` and rename the exported function `proxy` to `middleware`.
 - **Database:** the migration was run on a real PostgreSQL 16 server with the Supabase `auth` schema imitated, and 17
   checks passed (they live in `supabase/tests/`): numbering, history, releases, row-level security between two users, anonymous access, the coworker flow.
 - **Quick-capture parser and changelog:** tested directly.
-- **App code:** type-checked in strict mode, but against stand-in types for Next.js, React and Supabase, because the
-  npm registry was not reachable where this was written.
-- **Not done:** `npm install`, `next build`, and running the app against a live Supabase project. Expect to fix a few
-  small things the first time you run it, and use `npm run build` before deploying.
+- **App:** `npm run build` passes on Next.js 16, and the manual checklist (capture, triage, edits and notes, promotion,
+  releases, Work and Personal kept apart) passes against a local Supabase.
+- **Not re-tested:** signing out and back in, and a production deploy on Vercel with a hosted Supabase project.
 
 ## Not built yet
 

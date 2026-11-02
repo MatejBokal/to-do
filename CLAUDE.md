@@ -31,35 +31,26 @@ Next 16 calls the request interceptor `proxy.ts` (exports `proxy`). On Next 15 o
 
 ## Status: read this first
 
-This code was written in a sandbox where the npm registry was blocked. So:
+The app builds and runs. As of 2 Nov 2026:
 
-- `npm install` and `next build` have **never been run**, and the app has **never run against a live Supabase project**.
-- `@supabase/ssr` and `@supabase/supabase-js` are `"latest"` in `package.json`. After the first install, commit the lockfile and consider pinning.
-- What **was** verified:
-  - `supabase/migrations/0001_init.sql` on real PostgreSQL 16 with a stand-in for Supabase's `auth` schema. The 17 checks in
-    `supabase/tests/` pass: numbering, history, releases, RLS between two users, anonymous access, the coworker flow.
-  - `lib/parse-capture.ts` and `lib/changelog.ts`, tested directly (cases under Tests).
-  - A strict TypeScript check, but only against hand-written stand-in types for next, react and supabase.
-- **Not** verified: everything that depends on the real Next.js, React or Supabase runtime or types.
+- `npm run build` passes on Next.js 16.4 (Turbopack), and `tsc --noEmit` passes against the real types.
+- The manual checklist below passes against a local Supabase (ports 544xx, see `supabase/config.toml`): capture, triage,
+  item edits and notes, promotion, releases, and Work/Personal separation. Sign-out and sign-in again was not re-tested.
+- `supabase/migrations/0001_init.sql` is covered by the 17 checks in `supabase/tests/` (real PostgreSQL 16, stand-in `auth` schema).
+- `lib/parse-capture.ts` and `lib/changelog.ts` were tested directly (cases under Tests). No unit-test runner is set up.
+- The lockfile is committed. `@supabase/ssr` and `@supabase/supabase-js` are still `"latest"`; consider pinning.
 
-### First tasks, in order
+### Known rough edges
 
-1. `npm install`, then `npm run build`. Fix errors with the smallest change that keeps the intent.
-2. Get a database: a Supabase project (paste the migration into the SQL editor) or `supabase start` if Docker is available.
-3. `npm run dev` and walk through the manual checklist below. Fix what breaks.
-4. Re-run `supabase/tests/` whenever the migration changes.
-5. Commit the lockfile. Do not add features until the checklist passes.
-
-### Likely friction (real types versus the stand-ins)
-
-- The `@supabase/ssr` cookie adapter types (`setAll` parameter) in `lib/supabase/server.ts` and `lib/supabase/proxy.ts`.
-- Next 16 details: async `params`, `searchParams`, `cookies()` and `headers()`; `proxy.ts`; `redirect()` inside server actions.
-- `redirect()` and `notFound()` thrown from inside `React.cache` in `lib/data.ts`.
-- `<form action={serverAction}>` typing, and `useTransition` with async callbacks (React 19).
-- Supabase results are untyped (`any`). Pass every result through `rows<T>()` or a cast before calling `.map` or `.find`,
-  otherwise strict mode reports implicit-any callback parameters.
+- Pressing `c` right after a capture types a "c" into the bar, because it stays focused after saving.
+- The "add to release" list on the releases page may offer ACME-2 ("Note: remember dark mode toggle"). Check its type: ideas must not be offered.
+- A stray `C:\Users\matej\package-lock.json` makes Next pick the wrong workspace root and warn on every build. Delete it or set `turbopack.root`.
+- `supabase/config.toml` still has `[inbucket]`, which the current Supabase CLI wants as `[local_smtp]`.
 - Auth: the magic link works in the browser that requested it. Cross-device needs the `token_hash` email template (see README).
   `proxy.ts` calls `getUser()` on every request; `getClaims()` is a possible optimisation.
+- Supabase results are untyped (`any`). Pass every result through `rows<T>()` or a cast before calling `.map` or `.find`,
+  otherwise strict mode reports implicit-any callback parameters.
+- Re-run `supabase/tests/` whenever the migration changes.
 
 ## Data model
 
