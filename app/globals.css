@@ -857,3 +857,27 @@ textarea.input {
     animation: none !important;
   }
 }
+
+/* ---------- Type picker (new item form) ---------- */
+
+.chip--pick {
+  position: relative;
+  cursor: pointer;
+}
+.chip--pick input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.chip--pick:hover {
+  border-color: var(--ink-3);
+}
+.chip--pick:has(input:checked) {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+.chip--pick:has(input:focus-visible) {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}

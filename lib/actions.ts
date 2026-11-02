@@ -97,6 +97,41 @@ export async function captureItem(
 // Items
 // ---------------------------------------------------------------------------
 
+/** The "New item" form: the same fields as quick capture, chosen in the interface instead of typed. */
+export async function createItem(formData: FormData): Promise<void> {
+  const spaceSlug = text(formData.get('space_slug'));
+  const title = text(formData.get('title'));
+  const type = text(formData.get('type'));
+  const priority = text(formData.get('priority')) || 'none';
+  const effort = optional(formData.get('effort'));
+
+  if (!title) back(formData, 'An item needs a title');
+  if (!isItemType(type) || !isPriority(priority)) back(formData, 'Invalid type or priority');
+  if (effort !== null && !isEffort(effort)) back(formData, 'Invalid effort');
+
+  const supabase = await createClient();
+  const { data: space } = await supabase.from('spaces').select('id').eq('slug', spaceSlug).maybeSingle();
+  if (!space) fail('Space not found');
+
+  const { data, error } = await supabase
+    .from('items')
+    .insert({
+      space_id: space.id,
+      product_id: optional(formData.get('product_id')),
+      type,
+      title,
+      description: optional(formData.get('description')),
+      priority,
+      effort,
+    })
+    .select('id')
+    .single();
+  if (error || !data) back(formData, error?.message ?? 'Could not save that');
+
+  refresh();
+  redirect(`/s/${spaceSlug}/i/${data.id}`);
+}
+
 export async function updateItem(formData: FormData): Promise<void> {
   const id = text(formData.get('id'));
   const title = text(formData.get('title'));

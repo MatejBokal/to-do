@@ -30,6 +30,10 @@ export default function Sidebar({
         ))}
       </nav>
 
+      <Link href={`${base}/new`} className="btn">
+        New item
+      </Link>
+
       <nav className="nav" aria-label="Views">
         <NavLink href={base} exact>
           Inbox

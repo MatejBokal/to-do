@@ -77,7 +77,7 @@ Invariants to preserve:
 ## Code map
 
 - `app/` routes: `/login`, `/auth/confirm` (accepts `code` and `token_hash`), `/` (first space, or "No spaces yet"), `/s/[space]` (Inbox),
-  `/s/[space]/all`, `/s/[space]/p/[key]` (product items), `/s/[space]/p/[key]/releases`, `/s/[space]/i/[id]` (item), `/s/[space]/new-product`.
+  `/s/[space]/all`, `/s/[space]/p/[key]` (product items), `/s/[space]/p/[key]/releases`, `/s/[space]/i/[id]` (item), `/s/[space]/new-product`, `/s/[space]/new` (the New item form, optional `?product=KEY`).
 - `lib/actions.ts`: every server action.
 - `lib/data.ts`: `getContext(slug)` (cached per request: user, spaces, current space, products, members) and `rows<T>()`.
 - `lib/parse-capture.ts`: the quick-capture grammar. `lib/changelog.ts`: Markdown release notes. `lib/types.ts`: enums, labels, interfaces, `itemKey()`.
