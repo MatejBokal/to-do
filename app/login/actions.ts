@@ -16,11 +16,13 @@ export async function signInWithEmail(formData: FormData): Promise<void> {
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithOtp({
     email,
-    options: { emailRedirectTo: `${origin}/auth/confirm` },
+    // Accounts are created by hand in the Supabase dashboard; the sign-in form never makes one.
+    options: { emailRedirectTo: `${origin}/auth/confirm`, shouldCreateUser: false },
   });
 
   if (error) {
-    redirect('/login?error=' + encodeURIComponent(error.message));
+    const message = error.code === 'otp_disabled' ? 'No account for that email. Accounts are added by the owner.' : error.message;
+    redirect('/login?error=' + encodeURIComponent(message));
   }
   redirect('/login?sent=1');
 }
