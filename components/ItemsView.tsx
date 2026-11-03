@@ -95,19 +95,16 @@ export default async function ItemsView({
     return (
       <li className="row" key={item.id}>
         <TypeMark type={item.type} />
-        <div className="row__main">
-          <Link href={`${base}/i/${item.id}`} className="row__title">
-            {item.title}
-          </Link>
-          <div className="row__meta">
-            {ref ? <span className="key">{ref}</span> : null}
-            {!ref ? <span>No product</span> : null}
-            {item.priority !== 'none' ? <span className="prio">{PRIORITY_LABEL[item.priority]}</span> : null}
-            {item.effort ? <span>Effort {item.effort.toUpperCase()}</span> : null}
-            {release ? <span className="key">{release.version}</span> : null}
-            <span>{timeAgo(item.created_at)}</span>
-          </div>
-        </div>
+        <span className="key cell-key">{ref ?? '–'}</span>
+        <Link href={`${base}/i/${item.id}`} className="row__title">
+          {item.title}
+        </Link>
+        <span className={item.priority !== 'none' ? 'prio cell-prio' : 'muted cell-prio'}>
+          {item.priority !== 'none' ? PRIORITY_LABEL[item.priority] : '–'}
+        </span>
+        <span className="cell-effort">{item.effort ? item.effort.toUpperCase() : '–'}</span>
+        <span className="cell-release">{release ? <span className="key">{release.version}</span> : '–'}</span>
+        <span className="cell-created muted">{timeAgo(item.created_at)}</span>
         <StatusSelect id={item.id} status={item.status} />
       </li>
     );
@@ -124,15 +121,17 @@ export default async function ItemsView({
             </h1>
             {product.description ? <p className="muted">{product.description}</p> : null}
           </div>
-          <Link className="btn" href={`${base}/new?product=${product.key}`}>
-            New item
-          </Link>
-          <nav className="tabs" aria-label="Product views">
+          <div className="head-actions">
+            <nav className="tabs" aria-label="Product views">
             <Link href={`${base}/p/${product.key}`} aria-current="page">
               Items
             </Link>
             <Link href={`${base}/p/${product.key}/releases`}>Releases</Link>
           </nav>
+            <Link className="btn" href={`${base}/new?product=${product.key}`}>
+              New item
+            </Link>
+          </div>
         </header>
       ) : mode === 'inbox' ? (
         <header className="page-head">
@@ -212,7 +211,19 @@ export default async function ItemsView({
                 {STATUS_LABEL[group.status]} <span className="muted">{group.items.length}</span>
               </h2>
             ) : null}
-            <ul className="list">{group.items.map(renderRow)}</ul>
+            <ul className="list">
+              <li className="row row--head" aria-hidden="true">
+                <span />
+                <span>Key</span>
+                <span>Title</span>
+                <span className="cell-prio">Priority</span>
+                <span className="cell-effort">Effort</span>
+                <span className="cell-release">Release</span>
+                <span className="cell-created">Created</span>
+                <span>Status</span>
+              </li>
+              {group.items.map(renderRow)}
+            </ul>
           </section>
         ))
       )}
