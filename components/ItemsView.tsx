@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import EffortMark from '@/components/EffortMark';
 import PriorityMark from '@/components/PriorityMark';
 import StatusSelect from '@/components/StatusSelect';
 import TypeMark from '@/components/TypeMark';
@@ -110,7 +111,7 @@ export default async function ItemsView({
             <span className="muted">–</span>
           )}
         </span>
-        <span className="cell-effort">{item.effort ? item.effort.toUpperCase() : '–'}</span>
+        <span className="cell-effort">{item.effort ? <EffortMark effort={item.effort} /> : <span className="muted">–</span>}</span>
         <span className="cell-release">{release ? <span className="key">{release.version}</span> : '–'}</span>
         <span className="cell-created muted">{timeAgo(item.created_at)}</span>
         <StatusSelect id={item.id} status={item.status} />

@@ -4,9 +4,11 @@ import { getContext } from '@/lib/data';
 
 export default async function SpaceLayout({
   children,
+  modal,
   params,
 }: {
   children: React.ReactNode;
+  modal: React.ReactNode;
   params: Promise<{ space: string }>;
 }) {
   const { space: slug } = await params;
@@ -33,6 +35,7 @@ export default async function SpaceLayout({
           productKeys={ctx.products.filter((p) => !p.archived).map((p) => p.key)}
         />
         <div className="content">{children}</div>
+        {modal}
       </div>
     </div>
   );
