@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useTransition } from 'react';
 import { usePathname } from 'next/navigation';
 import { captureItem } from '@/lib/actions';
 import { parseCapture } from '@/lib/parse-capture';
+import PriorityMark from '@/components/PriorityMark';
 import { PRIORITY_LABEL, TYPE_LABEL } from '@/lib/types';
 
 export default function CaptureBar({ spaceSlug, productKeys }: { spaceSlug: string; productKeys: string[] }) {
@@ -91,7 +92,12 @@ export default function CaptureBar({ spaceSlug, productKeys }: { spaceSlug: stri
                 {TYPE_LABEL[parsed.type]}
               </span>
               <span className="chip">{target ?? 'No product yet'}</span>
-              {parsed.priority !== 'none' ? <span className="chip">{PRIORITY_LABEL[parsed.priority]}</span> : null}
+              {parsed.priority !== 'none' ? (
+                <span className="chip">
+                  <PriorityMark priority={parsed.priority} />
+                  {PRIORITY_LABEL[parsed.priority]}
+                </span>
+              ) : null}
               {parsed.effort ? <span className="chip">Effort {parsed.effort.toUpperCase()}</span> : null}
               {parsed.description ? <span className="chip">With notes</span> : null}
             </>

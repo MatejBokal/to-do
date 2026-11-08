@@ -97,8 +97,8 @@ Invariants to preserve:
   ` // ` with spaces starts the description, and flags inside it are not parsed. The server re-parses; the client parse is only a preview.
 - Ideas are not offered for releases until promoted. Adding an item to a release moves Inbox or Triaged items to Planned.
   "Mark released" sets the release's open items to Done.
-- Design: the interface is ink on paper, and **colour only ever means item type** (shape and colour: bug circle, feature diamond, idea ring,
-  modification square, task outlined square). The capture bar is the one loud element. Fonts are Hanken Grotesk and JetBrains Mono
+- Design: the interface is ink on paper, and **colour only means item type, plus one accent for High and Urgent priority** (type shape and colour: bug circle, feature diamond, idea ring,
+  modification square, task outlined square; priority is a flag: outline Low, ink-filled Medium, accent-filled High and Urgent, never a type colour). The capture bar is the one loud element. Fonts are Hanken Grotesk and JetBrains Mono
   (Google Fonts link in `app/layout.tsx`, system fallbacks). Light and dark through `prefers-color-scheme` tokens. Sentence case, plain verbs,
   no all-caps labels, no decorative motion. Do not add Tailwind or a UI kit without asking.
 

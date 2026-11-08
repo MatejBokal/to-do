@@ -1,6 +1,6 @@
 /* Shiplog
    One rule for colour: the interface is ink on paper, and colour only ever means something
-   (an item's type). The capture bar is the one loud element, because capturing fast is the point. */
+   (an item's type, or a high or urgent priority). The capture bar is the one loud element, because capturing fast is the point. */
 
 :root {
   --bg: #eef1f4;
@@ -19,6 +19,7 @@
   --t-idea: #c98600;
   --t-modification: #0f8576;
   --t-task: #5b6877;
+  --prio-hot: #8a3fd1;
 
   --radius: 6px;
   --font-ui: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -43,6 +44,7 @@
     --t-idea: #e8b43c;
     --t-modification: #3cc2b0;
     --t-task: #97a4b3;
+    --prio-hot: #b98bf0;
   }
 }
 
@@ -529,8 +531,28 @@ p {
   }
 }
 .prio {
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   color: var(--ink-2);
+}
+.prio[data-priority='urgent'] {
+  font-weight: 700;
+  color: var(--ink);
+}
+.flag {
+  flex: none;
+  stroke: var(--ink-2);
+  stroke-width: 1.5;
+  fill: none;
+}
+.flag[data-priority='medium'] {
+  fill: var(--ink-2);
+}
+.flag[data-priority='high'],
+.flag[data-priority='urgent'] {
+  stroke: var(--prio-hot);
+  fill: var(--prio-hot);
 }
 
 .empty {

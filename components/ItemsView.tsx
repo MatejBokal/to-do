@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import PriorityMark from '@/components/PriorityMark';
 import StatusSelect from '@/components/StatusSelect';
 import TypeMark from '@/components/TypeMark';
 import { getContext, rows } from '@/lib/data';
@@ -99,8 +100,15 @@ export default async function ItemsView({
         <Link href={`${base}/i/${item.id}`} className="row__title">
           {item.title}
         </Link>
-        <span className={item.priority !== 'none' ? 'prio cell-prio' : 'muted cell-prio'}>
-          {item.priority !== 'none' ? PRIORITY_LABEL[item.priority] : '–'}
+        <span className="cell-prio">
+          {item.priority !== 'none' ? (
+            <span className="prio" data-priority={item.priority}>
+              <PriorityMark priority={item.priority} />
+              {PRIORITY_LABEL[item.priority]}
+            </span>
+          ) : (
+            <span className="muted">–</span>
+          )}
         </span>
         <span className="cell-effort">{item.effort ? item.effort.toUpperCase() : '–'}</span>
         <span className="cell-release">{release ? <span className="key">{release.version}</span> : '–'}</span>
