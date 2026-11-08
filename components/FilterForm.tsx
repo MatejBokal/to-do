@@ -35,6 +35,25 @@ export default function FilterForm({
     }
   }, [searchParams, defaultDirs]);
 
+  // The filter menu is a <details>: close it on a click outside it or on Escape.
+  useEffect(() => {
+    const menu = () => ref.current?.querySelector<HTMLDetailsElement>('details[data-menu]');
+    const onClick = (event: MouseEvent) => {
+      const m = menu();
+      if (m?.open && !m.contains(event.target as Node)) m.open = false;
+    };
+    const onKey = (event: KeyboardEvent) => {
+      const m = menu();
+      if (event.key === 'Escape' && m?.open) m.open = false;
+    };
+    document.addEventListener('click', onClick);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('click', onClick);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, []);
+
   function go() {
     const form = ref.current;
     if (!form) return;

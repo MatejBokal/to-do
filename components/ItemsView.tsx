@@ -144,6 +144,8 @@ export default async function ItemsView({
     group: first(filters.group),
   };
   const customised = Object.values(current).some(Boolean);
+  // Status counts only when it differs from the default of showing open items.
+  const filterCount = [type, status, priority, effort, productFilter, releaseFilter, assignee].filter(Boolean).length;
 
   const groups: { status: Status | null; items: Item[] }[] = ungrouped
     ? [{ status: null, items }]
@@ -237,6 +239,102 @@ export default async function ItemsView({
       )}
 
       <FilterForm path={path} defaultDirs={DEFAULT_DIR}>
+        <details className="menu" data-menu>
+          <summary className="btn">
+            Filters{filterCount > 0 ? <span className="count">{filterCount}</span> : null}
+          </summary>
+          <div className="menu__panel">
+            <label className="field">
+              <span className="field__label">Type</span>
+              <select className="input" name="type" defaultValue={type ?? ''} aria-label="Type">
+                <option value="">All types</option>
+                {ITEM_TYPES.map((t) => (
+                  <option key={t} value={t}>
+                    {TYPE_LABEL[t]}
+                  </option>
+                ))}
+              </select>
+            </label>
+            {mode !== 'inbox' ? (
+              <label className="field">
+                <span className="field__label">Status</span>
+                <select className="input" name="status" defaultValue={status ?? ''} aria-label="Status">
+                  <option value="">Open</option>
+                  {STATUSES.map((s) => (
+                    <option key={s} value={s}>
+                      {STATUS_LABEL[s]}
+                    </option>
+                  ))}
+                  <option value="all">Everything</option>
+                </select>
+              </label>
+            ) : null}
+            <label className="field">
+              <span className="field__label">Priority</span>
+              <select className="input" name="priority" defaultValue={priority ?? ''} aria-label="Priority">
+                <option value="">Any priority</option>
+                {[...PRIORITIES].reverse().map((p) => (
+                  <option key={p} value={p}>
+                    {p === 'none' ? 'No priority' : PRIORITY_LABEL[p]}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="field">
+              <span className="field__label">Effort</span>
+              <select className="input" name="effort" defaultValue={effort ?? ''} aria-label="Effort">
+                <option value="">Any effort</option>
+                {EFFORTS.map((e) => (
+                  <option key={e} value={e}>
+                    {e.toUpperCase()}
+                  </option>
+                ))}
+                <option value="none">Not estimated</option>
+              </select>
+            </label>
+            {!product ? (
+              <label className="field">
+                <span className="field__label">Product</span>
+                <select className="input" name="product" defaultValue={productFilter ?? ''} aria-label="Product">
+                  <option value="">All products</option>
+                  {ctx.products
+                    .filter((p) => !p.archived)
+                    .map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.key} {p.name}
+                      </option>
+                    ))}
+                  <option value="none">No product</option>
+                </select>
+              </label>
+            ) : null}
+            <label className="field">
+              <span className="field__label">Release</span>
+              <select className="input" name="release" defaultValue={releaseFilter ?? ''} aria-label="Release">
+                <option value="">Any release</option>
+                {releaseOptions.map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {product ? r.version : `${ctx.products.find((p) => p.id === r.product_id)?.key ?? ''} ${r.version}`}
+                  </option>
+                ))}
+                <option value="none">No release</option>
+              </select>
+            </label>
+            <label className="field">
+              <span className="field__label">Assignee</span>
+              <select className="input" name="assignee" defaultValue={assignee ?? ''} aria-label="Assignee">
+                <option value="">Anyone</option>
+                {ctx.members.map((m) => (
+                  <option key={m.user_id} value={m.user_id}>
+                    {m.name}
+                  </option>
+                ))}
+                <option value="none">Unassigned</option>
+              </select>
+            </label>
+          </div>
+        </details>
+
         <input
           className="input toolbar__search"
           type="search"
@@ -245,76 +343,6 @@ export default async function ItemsView({
           placeholder="Search title, description, source"
           aria-label="Search"
         />
-        <select className="input" name="type" defaultValue={type ?? ''} aria-label="Type">
-          <option value="">All types</option>
-          {ITEM_TYPES.map((t) => (
-            <option key={t} value={t}>
-              {TYPE_LABEL[t]}
-            </option>
-          ))}
-        </select>
-        {mode !== 'inbox' ? (
-          <select className="input" name="status" defaultValue={status ?? ''} aria-label="Status">
-            <option value="">Open</option>
-            {STATUSES.map((s) => (
-              <option key={s} value={s}>
-                {STATUS_LABEL[s]}
-              </option>
-            ))}
-            <option value="all">Everything</option>
-          </select>
-        ) : null}
-        <select className="input" name="priority" defaultValue={priority ?? ''} aria-label="Priority">
-          <option value="">Any priority</option>
-          {[...PRIORITIES].reverse().map((p) => (
-            <option key={p} value={p}>
-              {p === 'none' ? 'No priority' : PRIORITY_LABEL[p]}
-            </option>
-          ))}
-        </select>
-        <select className="input" name="effort" defaultValue={effort ?? ''} aria-label="Effort">
-          <option value="">Any effort</option>
-          {EFFORTS.map((e) => (
-            <option key={e} value={e}>
-              {e.toUpperCase()}
-            </option>
-          ))}
-          <option value="none">Not estimated</option>
-        </select>
-        {!product ? (
-          <select className="input" name="product" defaultValue={productFilter ?? ''} aria-label="Product">
-            <option value="">All products</option>
-            {ctx.products
-              .filter((p) => !p.archived)
-              .map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.key} {p.name}
-                </option>
-              ))}
-            <option value="none">No product</option>
-          </select>
-        ) : null}
-        <select className="input" name="release" defaultValue={releaseFilter ?? ''} aria-label="Release">
-          <option value="">Any release</option>
-          {releaseOptions.map((r) => (
-            <option key={r.id} value={r.id}>
-              {product ? r.version : `${ctx.products.find((p) => p.id === r.product_id)?.key ?? ''} ${r.version}`}
-            </option>
-          ))}
-          <option value="none">No release</option>
-        </select>
-        <select className="input" name="assignee" defaultValue={assignee ?? ''} aria-label="Assignee">
-          <option value="">Anyone</option>
-          {ctx.members.map((m) => (
-            <option key={m.user_id} value={m.user_id}>
-              {m.name}
-            </option>
-          ))}
-          <option value="none">Unassigned</option>
-        </select>
-
-        <span className="toolbar__break" />
-
         <label className="toolbar__label">
           Sort
           <select className="input" name="sort" defaultValue={sort.field} aria-label="Sort by">
