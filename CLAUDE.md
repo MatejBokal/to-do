@@ -82,7 +82,7 @@ Invariants to preserve:
 - `lib/data.ts`: `getContext(slug)` (cached per request: user, spaces, current space, products, members) and `rows<T>()`.
 - `lib/parse-capture.ts`: the quick-capture grammar. `lib/changelog.ts`: Markdown release notes. `lib/types.ts`: enums, labels, interfaces, `itemKey()`.
 - `lib/supabase/{server,proxy,env}.ts`: clients and session refresh.
-- `components/`: `ItemsView` (shared list for Inbox, All and product pages), `CaptureBar`, `StatusSelect`, `NavLink`, `Sidebar`, `TypeMark`, `CopyButton`.
+- `lib/list-filters.ts`: sort fields, default directions and the sort comparator for lists. `components/`: `ItemsView` (shared list for Inbox, All and product pages; every filter and the sort live in the URL, and `FilterForm` is the client toolbar that edits them), `ItemDetail` and `ItemDialog` (the item form, shown as a page or as a dialog over the list through the `@modal` slot), `CaptureBar`, `StatusSelect`, `NavLink`, `Sidebar`, `TypeMark`, `CopyButton`.
   Client components only where interaction needs them.
 
 ## Conventions and decisions to keep
